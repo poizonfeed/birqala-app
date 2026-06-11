@@ -109,7 +109,9 @@ export default function FloatingNav({ activeTab, onTabChange }) {
         {/* Hint text visible during drag */}
         {(isDragging || isComplete) && (
           <div className={styles.swipeHint}>
-            {isComplete ? "✓ Post Created!" : "Slide to create →"}
+            <span className={styles.swipeHintInner}>
+              {isComplete ? "Post Created!" : "Slide to create"}
+            </span>
           </div>
         )}
 
