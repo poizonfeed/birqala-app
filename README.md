@@ -18,10 +18,10 @@ This project is built using a modern mobile-first design system inspired by Goog
 
 ## Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org/) (App Router, JavaScript)
+- **Framework**: Next.js (App Router, JavaScript)
 - **Styling**: Vanilla CSS (Modular CSS)
-- **Map Engine**: [Leaflet](https://leafletjs.org/) & [React-Leaflet](https://react-leaflet.js.org/)
-- **Icons**: [Lucide React](https://lucide.dev/)
+- **Map Engine**: Leaflet & React-Leaflet
+- **Icons**: Lucide React
 
 ---
 
@@ -49,4 +49,4 @@ This project is built using a modern mobile-first design system inspired by Goog
    npm run dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser (preferably in mobile simulation mode).
+4. Open http://localhost:3000 in your browser (preferably in mobile simulation mode).
