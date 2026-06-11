@@ -1,45 +1,77 @@
 # Antigravity Status and Walkthrough Document
 
-This document tracks Antigravity's progress, changes made, and current status of the BirQala project. It will be updated as we build and complete new stages.
+This document tracks Antigravity's progress, changes made, and current status of the BirQala project. Updated after every session.
 
 ---
 
 ## Stage 1 — Working Map and Interface Design (Completed)
 
-We have built the base map interface for Astana with custom interactive problem pins, a floating bottom navigation island with a swipe-to-create gesture, and post details.
+### Project Setup
+- Initialized Next.js (App Router, JavaScript) project inside `birqala-app/`
+- Installed dependencies: `leaflet`, `react-leaflet`, `lucide-react`
+- Connected to GitHub repository: [poizonfeed/birqala-app](https://github.com/poizonfeed/birqala-app)
 
-### Changes Made
+### Design System — [globals.css](app/globals.css)
+- Material You theme: dark green primary (`#2E7D32`), pastel surfaces, warm outline tones
+- CSS variables for shadows, radius, and transitions using Material's standard easing curve
+- Leaflet control overrides to match the overall aesthetic
 
-#### Project Setup
-- Initialized Next.js project inside `birqala-app/`
-- Installed dependencies (`leaflet`, `react-leaflet`, `lucide-react`)
+### Mock Data — [mockData.js](lib/mockData.js)
+- 5 realistic urban issues across Astana (broken streetlight, overflowing trash, damaged sidewalk, graffiti, pothole)
+- Upvote counts range 2–145 to demonstrate the full yellow-to-red color spectrum
+- Helper functions: `getUpvoteColor()`, `getPinSize()`, `formatTimeAgo()`
 
-#### Design System — [globals.css](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/app/globals.css)
-- Custom Material You theme: dark green primary (`#2E7D32`), pastel surfaces, warm outline tones, and generous roundings
-- Smooth transitions using Material design's standard easing curve
-- Styled Leaflet controls to match the modern, premium aesthetic
+### Components
 
-#### Mock Data and Helpers — [mockData.js](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/lib/mockData.js)
-- 5 realistic urban issues in Astana (broken streetlight, overflowing trash, damaged sidewalk, graffiti, pothole)
-- Custom color gradient and pin scaling helper functions based on upvote counts (ranging from yellow/small for low upvotes to red/large for high upvotes)
-
-#### Components Created
-
-| Component | Path | Description |
+| Component | File | Description |
 | :--- | :--- | :--- |
-| **AppShell** | [AppShell.js](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/components/AppShell.js) | Orchestrates client state (selected posts, detail modals, active tabs) |
-| **Map** | [Map.js](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/components/Map/Map.js) | Leaflet map centered on Astana, customized with beautiful teardrop SVG pins and CartoDB Voyager tiles |
-| **FloatingNav** | [FloatingNav.js](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/components/FloatingNav/FloatingNav.js) | Floating navigation tab bar with integrated slide-to-create swipe gesture |
-| **PostCard** | [PostCard.js](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/components/PostCard/PostCard.js) | Sleek bottom-sheet preview containing issue details, tags, and upvote counter |
-| **PostDetail** | [PostDetail.js](file:///Users/sultanpoizon/Desktop/BirQala/birqala-app/components/PostDetail/PostDetail.js) | Full-screen detail overlay complete with comments feed and comment input |
+| AppShell | [AppShell.js](components/AppShell.js) | Client-side root, manages selected post, detail modal, active tab state |
+| Map | [Map.js](components/Map/Map.js) | Leaflet map centered on Astana, teardrop SVG pins (yellow to red), CartoDB Voyager tiles (free) |
+| FloatingNav | [FloatingNav.js](components/FloatingNav/FloatingNav.js) | Bottom island nav with Map/Feed/Profile tabs and swipe-to-create gesture |
+| PostCard | [PostCard.js](components/PostCard/PostCard.js) | Floating rounded preview card that appears above the island when a pin is tapped |
+| PostDetail | [PostDetail.js](components/PostDetail/PostDetail.js) | Floating rounded full-post panel with comments, blurred map visible behind it |
 
-#### Assets
-- 5 realistic AI-generated photos placed in `public/images/post-{1-5}.jpg`
+### Assets
+- 5 AI-generated photos in `public/images/post-{1-5}.jpg`
 
 ---
 
-## Current Status and Validation
+## UI Fixes and Refinements (Post Stage 1)
 
-- Checked: `npm run build` passes with zero errors
-- Checked: Local development server running at http://localhost:3000
-- Checked: Pushed to GitHub repository: [poizonfeed/birqala-app](https://github.com/poizonfeed/birqala-app)
+### Swipe-to-create gesture fixes
+- "Slide to create" text was invisible (light on light). Fixed by wrapping it in a dark frosted-glass pill.
+- "Post Created!" was obscured by nav buttons bleeding through. Fixed by raising swipe hint to `z-index: 10` and fading nav buttons to `opacity: 0` on completion with a 250ms transition.
+- Post Created text drops the dark pill and renders directly as clean white on the green overlay, with a scale-in animation.
+
+### Floating panel redesign
+- PostCard and PostDetail were bottom sheets attached to the screen edge — now they are fully rounded floating cards that hover above the island.
+- The overlay uses `padding-bottom: 104px` to push cards clear of the island. The island (`z-index: 1000`) always floats on top.
+- PostDetail overlay applies `backdrop-filter: blur(8px)` so the map is visible and blurred behind the panel.
+- Tapping the blurred area outside PostDetail dismisses it.
+- z-index hierarchy: Map (base) < PostCard overlay (500) < PostDetail overlay (600) < FloatingNav (1000).
+
+---
+
+## Rules and Conventions
+
+- No emojis anywhere in code or markdown files.
+- No AI attribution in git commit messages.
+- All commits go to `birqala-app/` only, not the parent `BirQala/` directory.
+- Design style: Material You, dark green primary, pastel, rounded, mobile-first.
+- No paid APIs or services — map tiles use free CartoDB Voyager.
+
+---
+
+## Validation
+
+- `npm run build` passes with zero errors.
+- Dev server runs at http://localhost:3000.
+- Repository: [poizonfeed/birqala-app](https://github.com/poizonfeed/birqala-app)
+
+---
+
+## Up Next — Stage 2: Feed and Posts Logic
+
+- Feed page showing all posts with search bar and sort controls (top / recent / relevance)
+- Post creation flow (triggered by the swipe-to-create gesture)
+- Make the Feed and Profile nav tabs functional
