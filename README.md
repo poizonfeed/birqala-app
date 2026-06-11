@@ -4,6 +4,10 @@
 
 This project is built using a modern mobile-first design system inspired by Google's Material You aesthetic, prioritizing simplicity, micro-animations, and visual clarity.
 
+## Live Demo
+
+The project is live and deployed at: [https://birqala.vercel.app/](https://birqala.vercel.app/)
+
 ---
 
 ## Features (Stage 1)
