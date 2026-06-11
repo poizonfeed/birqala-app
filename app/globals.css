@@ -1,49 +1,105 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary palette — Material You dark green */
+  --primary: #2E7D32;
+  --primary-dark: #1B5E20;
+  --primary-light: #4CAF50;
+  --primary-container: #C8E6C9;
+  --on-primary: #FFFFFF;
+  --on-primary-container: #002204;
+
+  /* Surface colors */
+  --surface: #FAFEFA;
+  --surface-dim: #D9DBD4;
+  --surface-container-lowest: #FFFFFF;
+  --surface-container-low: #F3F5EE;
+  --surface-container: #EDF0E9;
+  --surface-container-high: #E8EAE3;
+  --surface-container-highest: #E2E4DD;
+
+  /* Text */
+  --on-surface: #1A1C18;
+  --on-surface-variant: #43483E;
+  --outline: #74796D;
+  --outline-variant: #C3C8BB;
+
+  /* Error */
+  --error: #BA1A1A;
+  --error-container: #FFDAD6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.12), 0 12px 24px rgba(0, 0, 0, 0.08);
+
+  /* Radius — Material You uses generous rounding */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Transitions — Material You emphasises the standard easing curve */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --transition-fast: 150ms var(--ease-standard);
+  --transition-normal: 300ms var(--ease-standard);
+  --transition-slow: 500ms var(--ease-standard);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ── Reset ─────────────────────────────────────────────────── */
 
-html {
-  height: 100%;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* ── Leaflet overrides — Material You look ─────────────────── */
+
+.leaflet-container {
+  font-family: inherit !important;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: var(--shadow-md) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.leaflet-control-zoom a {
+  background: var(--surface-container-lowest) !important;
+  color: var(--on-surface) !important;
+  border: none !important;
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 18px !important;
+  transition: background var(--transition-fast);
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--surface-container-high) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius-sm) 0 0 0 !important;
+  font-size: 10px !important;
+  padding: 2px 8px !important;
 }
