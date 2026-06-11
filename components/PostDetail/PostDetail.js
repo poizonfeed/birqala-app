@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { getUpvoteColor, formatTimeAgo } from "@/lib/mockData";
 import { ArrowUp, Clock, X, MessageCircle, Send } from "lucide-react";
 import styles from "./PostDetail.module.css";
@@ -7,7 +8,12 @@ import styles from "./PostDetail.module.css";
 export default function PostDetail({ post, onClose }) {
   if (!post) return null;
 
+  const commentsRef = useRef(null);
   const upvoteColor = getUpvoteColor(post.upvotes);
+
+  const scrollToComments = () => {
+    commentsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -51,12 +57,24 @@ export default function PostDetail({ post, onClose }) {
 
           {/* Upvote bar + tags */}
           <div className={styles.upvoteBar}>
-            <div
-              className={styles.upvotes}
-              style={{ color: upvoteColor, borderColor: upvoteColor }}
-            >
-              <ArrowUp size={20} strokeWidth={2.5} />
-              <span>{post.upvotes} confirmations</span>
+            <div className={styles.statsContainer}>
+              <div
+                className={styles.upvotes}
+                style={{ color: upvoteColor, borderColor: upvoteColor }}
+              >
+                <ArrowUp size={20} strokeWidth={2.5} />
+                <span>{post.upvotes} confirmations</span>
+              </div>
+              <button
+                className={`${styles.commentsBtn} ${
+                  post.comments.length === 0 ? styles.dimmed : ""
+                }`}
+                onClick={scrollToComments}
+                aria-label="Scroll to comments"
+              >
+                <MessageCircle size={20} />
+                <span>{post.comments.length} comments</span>
+              </button>
             </div>
             <div className={styles.tags}>
               {post.tags.map((tag) => (
@@ -71,7 +89,7 @@ export default function PostDetail({ post, onClose }) {
           <p className={styles.text}>{post.text}</p>
 
           {/* Comments */}
-          <div className={styles.commentsSection}>
+          <div ref={commentsRef} className={styles.commentsSection}>
             <h3 className={styles.commentsTitle}>
               <MessageCircle size={18} />
               Comments ({post.comments.length})

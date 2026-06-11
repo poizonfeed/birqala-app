@@ -181,3 +181,24 @@
   font-weight: 700;
   flex-shrink: 0;
 }
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.comments {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.comments.dimmed {
+  opacity: 0.35;
+}
+

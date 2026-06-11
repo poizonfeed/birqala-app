@@ -31,21 +31,28 @@ function createPinIcon(upvotes, isSelected) {
         transform: rotate(-45deg);
         border: ${border};
         box-shadow: ${boxShadow};
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: relative;
         cursor: pointer;
         transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
-        position: relative;
         z-index: ${zIndex};
       ">
-        <span style="
+        <div style="
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           transform: rotate(45deg);
-          font-size: ${Math.max(10, displaySize * 0.28)}px;
-          font-weight: 700;
-          color: white;
-          text-shadow: 0 1px 3px rgba(0,0,0,0.35);
-        ">${upvotes}</span>
+        ">
+          <span style="
+            font-size: ${Math.max(12, Math.round(displaySize * 0.35))}px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.35);
+            margin-top: -3px; /* visually center in the rounded bubble */
+            line-height: 1;
+          ">${upvotes}</span>
+        </div>
       </div>
     `,
     iconSize: [displaySize, displaySize],

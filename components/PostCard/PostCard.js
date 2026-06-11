@@ -1,7 +1,7 @@
 "use client";
 
 import { getUpvoteColor, formatTimeAgo } from "@/lib/mockData";
-import { ArrowUp, Clock } from "lucide-react";
+import { ArrowUp, Clock, MessageCircle } from "lucide-react";
 import styles from "./PostCard.module.css";
 
 export default function PostCard({ post, onClose, onExpand }) {
@@ -62,9 +62,19 @@ export default function PostCard({ post, onClose, onExpand }) {
               </span>
             ))}
           </div>
-          <div className={styles.upvotes} style={{ color: upvoteColor }}>
-            <ArrowUp size={18} strokeWidth={2.5} />
-            <span>{post.upvotes}</span>
+          <div className={styles.stats}>
+            <div
+              className={`${styles.comments} ${
+                post.comments.length === 0 ? styles.dimmed : ""
+              }`}
+            >
+              <MessageCircle size={18} />
+              <span>{post.comments.length}</span>
+            </div>
+            <div className={styles.upvotes} style={{ color: upvoteColor }}>
+              <ArrowUp size={18} strokeWidth={2.5} />
+              <span>{post.upvotes}</span>
+            </div>
           </div>
         </div>
       </div>

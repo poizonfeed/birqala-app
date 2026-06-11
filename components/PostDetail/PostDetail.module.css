@@ -201,6 +201,52 @@
   white-space: nowrap;
 }
 
+.statsContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.commentsBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--outline-variant);
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.commentsBtn:hover {
+  background: var(--surface-container-low);
+  border-color: var(--outline);
+  color: var(--on-surface);
+  transform: translateY(-1px);
+}
+
+.commentsBtn:active {
+  transform: translateY(0);
+}
+
+.commentsBtn.dimmed {
+  opacity: 0.4;
+  border-color: var(--outline-variant);
+}
+
+.commentsBtn.dimmed:hover {
+  background: transparent;
+  transform: none;
+  border-color: var(--outline-variant);
+  color: var(--on-surface-variant);
+}
+
+
 .tags {
   display: flex;
   gap: 6px;

@@ -50,6 +50,20 @@ This document tracks Antigravity's progress, changes made, and current status of
 - Tapping the blurred area outside PostDetail dismisses it.
 - z-index hierarchy: Map (base) < PostCard overlay (500) < PostDetail overlay (600) < FloatingNav (1000).
 
+### Selected Pin & Map Interaction
+- Tap/click on a marker highlights it: it grows 22% larger, gains a matching color ring, and gets a higher z-index to stand above surrounding markers.
+- Tapping a bare area on the map closes the active PostCard.
+
+### True Yellow Color Fix & Pin Legibility
+- Shifted the lowest upvote color from HSL 60° (greenish-yellow) to HSL 48° (vibrant, warm golden yellow) to prevent the pins and confirmation text from blending into the light map background, while retaining the original solid-color teardrop body.
+- Increased the font size of the numbers inside the marker pins by ~25% (from 28% of size to 35% of size, min 12px) to better fill the spacious center of the teardrop.
+- Adjusted the number alignment using an absolute `inset: 0` flex container inside the pin, resolving off-centering layout bugs caused by rotated inline spans.
+- Applied a vertical offset of `margin-top: -3px` inside the un-rotated inner container to visually align the text directly in the center of the teardrop's rounded bubble.
+
+### Comments Features
+- Added a `MessageCircle` comments icon in `PostCard` to the left of the upvote counter. It displays the comment count, is unclickable, and dims to `0.35` opacity if there are no comments.
+- Added a `commentsBtn` in `PostDetail` next to the confirmations container. It is a fully styled button (with hover scale and click feedback) showing the total comments, and clicking it smoothly scrolls down to the comments section via React refs.
+
 ---
 
 ## Rules and Conventions
