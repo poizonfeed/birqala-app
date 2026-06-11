@@ -1,14 +1,45 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 800;
-  background: var(--surface);
-  animation: slideInFull 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 600;
+  /* blurs the map behind the floating panel */
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* float the panel above the island with breathing room on all sides */
+  padding: 60px 16px 104px;
+  animation: overlayIn 300ms ease-out;
+  pointer-events: auto;
 }
 
-@keyframes slideInFull {
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Floating card ────────────────────────────────────────── */
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  height: 100%;
+  background: var(--surface);
+  /* fully rounded on all corners */
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.28);
+  animation: sheetUp 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes sheetUp {
   from {
-    transform: translateY(40%);
+    transform: translateY(60px);
     opacity: 0;
   }
   to {
@@ -17,16 +48,15 @@
   }
 }
 
-/* ── Modal layout ──────────────────────────────────────────── */
+/* ── Drag handle ───────────────────────────────────────────── */
 
-.modal {
-  width: 100%;
-  height: 100%;
-  max-width: 540px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+.handle {
+  width: 36px;
+  height: 4px;
+  background: var(--outline-variant);
+  border-radius: var(--radius-full);
+  margin: 12px auto 4px;
+  flex-shrink: 0;
 }
 
 /* ── Close button ──────────────────────────────────────────── */
@@ -35,8 +65,8 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: var(--surface-container);
   border: none;
@@ -66,7 +96,7 @@
   flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 20px 20px 20px;
+  padding: 16px 20px 20px;
 }
 
 /* ── Header ────────────────────────────────────────────────── */
@@ -76,7 +106,7 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
-  padding-right: 48px; /* leave space for close button */
+  padding-right: 48px;
 }
 
 .avatar {
@@ -278,9 +308,11 @@
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
+  /* bottom padding only — island floats above this at its own z-index */
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--outline-variant);
   background: var(--surface-container-lowest);
+  flex-shrink: 0;
 }
 
 .input {

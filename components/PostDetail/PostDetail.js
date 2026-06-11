@@ -10,8 +10,11 @@ export default function PostDetail({ post, onClose }) {
   const upvoteColor = getUpvoteColor(post.upvotes);
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        {/* Drag handle */}
+        <div className={styles.handle} />
+
         {/* Close button */}
         <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
           <X size={22} />

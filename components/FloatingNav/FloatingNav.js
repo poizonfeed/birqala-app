@@ -108,7 +108,7 @@ export default function FloatingNav({ activeTab, onTabChange }) {
 
         {/* Hint text visible during drag */}
         {(isDragging || isComplete) && (
-          <div className={styles.swipeHint}>
+          <div className={`${styles.swipeHint} ${isComplete ? styles.swipeHintComplete : ""}`}>
             <span className={styles.swipeHintInner}>
               {isComplete ? "Post Created!" : "Slide to create"}
             </span>
@@ -120,7 +120,7 @@ export default function FloatingNav({ activeTab, onTabChange }) {
             key={key}
             className={`${styles.navBtn} ${activeTab === key ? styles.navBtnActive : ""}`}
             onClick={() => onTabChange(key)}
-            style={{ opacity: isDragging ? 0.2 : 1 }}
+            style={{ opacity: isDragging ? 0.15 : isComplete ? 0 : 1, transition: "opacity 250ms ease" }}
           >
             <Icon size={21} strokeWidth={activeTab === key ? 2.4 : 1.8} />
             <span>{label}</span>
