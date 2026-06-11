@@ -43,7 +43,12 @@ export default function AppShell() {
 
   return (
     <div className={styles.shell}>
-      <MapView posts={mockPosts} onPinClick={handlePinClick} />
+      <MapView
+        posts={mockPosts}
+        onPinClick={handlePinClick}
+        selectedPostId={selectedPost?.id ?? null}
+        onMapClick={handleCardClose}
+      />
 
       {selectedPost && !isDetailOpen && (
         <PostCard
