@@ -49,6 +49,10 @@ This document tracks Antigravity's progress, changes made, and current status of
 - PostDetail overlay applies `backdrop-filter: blur(8px)` so the map is visible and blurred behind the panel.
 - Tapping the blurred area outside PostDetail dismisses it.
 - z-index hierarchy: Map (base) < PostCard overlay (500) < PostDetail overlay (600) < FloatingNav (1000).
+- Viewport Locking: Added `overflow: hidden` on the overlays and `overflow-x: hidden` on the `PostDetail` scrollable container to completely eliminate horizontal viewport shift and rubber-banding wobble on desktop and mobile browsers.
+- Sticky Rounded Header: Refactored the `PostDetail` header to be sticky (`position: sticky; top: 0; z-index: 20;`) with a solid background and a bottom border-radius (`var(--radius-xl)`). Removed top padding from `.scrollArea` and set `margin-top: 0` on the sticky header to remove excessive layout gaps and prevent the post picture from peaking out above/behind the header before scrolling. This keeps the user section visible at all times, and ensures the post picture maintains its rounded corners visually as it slides under the header.
+
+
 
 ### Selected Pin & Map Interaction
 - Tap/click on a marker highlights it: it grows 22% larger, gains a matching color ring, and gets a higher z-index to stand above surrounding markers.

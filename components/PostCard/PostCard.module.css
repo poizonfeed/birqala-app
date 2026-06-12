@@ -9,6 +9,7 @@
   padding: 16px 16px 104px;
   animation: fadeIn 200ms ease-out;
   pointer-events: none;
+  overflow: hidden;
 }
 
 @keyframes fadeIn {

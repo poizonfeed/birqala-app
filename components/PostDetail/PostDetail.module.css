@@ -13,6 +13,7 @@
   padding: 60px 16px 104px;
   animation: overlayIn 300ms ease-out;
   pointer-events: auto;
+  overflow: hidden;
 }
 
 @keyframes overlayIn {
@@ -74,7 +75,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 30;
   color: var(--on-surface);
   transition:
     background var(--transition-fast),
@@ -95,18 +96,26 @@
 .scrollArea {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
-  padding: 16px 20px 20px;
+  padding: 0 20px 20px;
 }
 
 /* ── Header ────────────────────────────────────────────────── */
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
+  margin: 0 -20px 16px;
+  padding: 16px 20px;
   padding-right: 48px;
+  background: var(--surface);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .avatar {
