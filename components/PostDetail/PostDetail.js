@@ -130,12 +130,13 @@ export default function PostDetail({ post, onClose }) {
             </div>
           </div>
 
-          {/* Comment input bar */}
+           {/* Comment input bar */}
           <div className={styles.commentInput}>
             <input
               type="text"
               placeholder="Add a comment…"
               className={styles.input}
+              onKeyDown={(e) => e.stopPropagation()}
             />
             <button className={styles.sendBtn} aria-label="Send comment">
               <Send size={18} />

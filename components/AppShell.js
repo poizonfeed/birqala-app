@@ -65,6 +65,12 @@ export default function AppShell() {
     setActiveTab("feed");
   }, []);
 
+  const handleTabChange = useCallback((tab) => {
+    setActiveTab(tab);
+    setSelectedPost(null);
+    setIsDetailOpen(false);
+  }, []);
+
   return (
     <div className={styles.shell}>
       {activeTab === "map" && (
@@ -107,9 +113,11 @@ export default function AppShell() {
         />
       )}
 
+      {activeTab !== "map" && <div className={styles.bottomBarBlur} />}
+
       <FloatingNav 
         activeTab={activeTab} 
-        onTabChange={setActiveTab} 
+        onTabChange={handleTabChange} 
         onCreatePost={() => setIsCreatingPost(true)}
       />
     </div>

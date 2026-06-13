@@ -75,6 +75,7 @@ export default function CreatePost({ onClose, onSubmit }) {
               placeholder="Describe the issue in detail..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
               rows={4}
             />
           </div>

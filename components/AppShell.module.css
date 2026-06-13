@@ -35,3 +35,17 @@
     transform: rotate(360deg);
   }
 }
+
+.bottomBarBlur {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 96px;
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  z-index: 950; /* below FloatingNav (1000) but above lists */
+  pointer-events: none; /* let clicks pass through to list items */
+}

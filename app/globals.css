@@ -22,6 +22,11 @@
   --outline: #74796D;
   --outline-variant: #C3C8BB;
 
+  /* Backwards compatibility / generic variables mapped to Material You */
+  --background: var(--surface);
+  --text: var(--on-surface);
+  --text-secondary: var(--on-surface-variant);
+
   /* Error */
   --error: #BA1A1A;
   --error-container: #FFDAD6;
