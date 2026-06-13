@@ -88,8 +88,29 @@ This document tracks Antigravity's progress, changes made, and current status of
 
 ---
 
-## Up Next — Stage 2: Feed and Posts Logic
+## Stage 2 — Feed and Posts Logic (Completed)
 
-- Feed page showing all posts with search bar and sort controls (top / recent / relevance)
-- Post creation flow (triggered by the swipe-to-create gesture)
-- Make the Feed and Profile nav tabs functional
+### Routing & Tab Navigation
+- `AppShell` now manages views conditionally (`map`, `feed`, `profile`).
+- `FloatingNav` is now fully functional, toggling views while maintaining the swipe-to-create gesture logic.
+
+### Feed Component
+- Built a scrollable list view (`Feed.js`) displaying all posts in `mockData.js`.
+- Implemented real-time search functionality by post text and tags.
+- Added dynamic sorting controls for "Top" (by upvotes), "Recent" (by timestamp), and "Relevance" (a simulated score combining time and upvotes).
+
+### Post Creation Flow
+- Replaced the temporary "Post Created!" state on the swipe gesture with a callback to trigger a full-screen `CreatePost` overlay.
+- Built a simulated form to enter descriptions, pick issue tags, and "take a photo".
+- Includes mock submission logic that adds a new local post object to the `AppShell`'s state and switches the user automatically to the Feed tab to see their new post.
+
+### Profile Placeholder
+- Added a simple `Profile.js` placeholder component to handle the routing state before full implementation.
+
+---
+
+## Up Next — Stage 3: Profile Page
+
+- Complete implementation of the user Profile page.
+- Display the user's history of created posts and verified issues.
+- Show accumulated XP/Points.

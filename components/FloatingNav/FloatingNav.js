@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { Map, Newspaper, User, Plus, Check } from "lucide-react";
 import styles from "./FloatingNav.module.css";
 
-export default function FloatingNav({ activeTab, onTabChange }) {
+export default function FloatingNav({ activeTab, onTabChange, onCreatePost }) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragProgress, setDragProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -42,14 +42,13 @@ export default function FloatingNav({ activeTab, onTabChange }) {
       if (progress >= 0.92) {
         draggingRef.current = false;
         setIsDragging(false);
-        setIsComplete(true);
-        setTimeout(() => {
-          setIsComplete(false);
-          setDragProgress(0);
-        }, 1800);
+        setDragProgress(0);
+        if (onCreatePost) {
+          onCreatePost();
+        }
       }
     },
-    []
+    [onCreatePost]
   );
 
   const handleDragEnd = useCallback(() => {
@@ -107,10 +106,10 @@ export default function FloatingNav({ activeTab, onTabChange }) {
         />
 
         {/* Hint text visible during drag */}
-        {(isDragging || isComplete) && (
-          <div className={`${styles.swipeHint} ${isComplete ? styles.swipeHintComplete : ""}`}>
+        {isDragging && !isComplete && (
+          <div className={styles.swipeHint}>
             <span className={styles.swipeHintInner}>
-              {isComplete ? "Post Created!" : "Slide to create"}
+              Slide to create
             </span>
           </div>
         )}
