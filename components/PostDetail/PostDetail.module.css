@@ -16,6 +16,41 @@
   overflow: hidden;
 }
 
+/* ── Close button — sits outside the modal, top-right corner ── */
+
+.closeBtnOuter {
+  position: absolute;
+  /* align with the top-right corner of the modal */
+  top: -44px;
+  right: -4px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--on-surface);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  pointer-events: auto;
+}
+
+.closeBtnOuter:hover {
+  background: #fff;
+  transform: scale(1.08);
+}
+
+.closeBtnOuter:active {
+  transform: scale(0.92);
+}
+
 @keyframes overlayIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -36,6 +71,14 @@
   box-shadow: 0 16px 64px rgba(0, 0, 0, 0.28);
   animation: sheetUp 420ms cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+}
+
+/* wrapper needed so the outer close button can be positioned relative to modal */
+.modalWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  height: 100%;
 }
 
 @keyframes sheetUp {
@@ -60,36 +103,7 @@
   flex-shrink: 0;
 }
 
-/* ── Close button ──────────────────────────────────────────── */
-
-.closeBtn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--surface-container);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 30;
-  color: var(--on-surface);
-  transition:
-    background var(--transition-fast),
-    transform var(--transition-fast);
-}
-
-.closeBtn:hover {
-  background: var(--surface-container-high);
-  transform: scale(1.06);
-}
-
-.closeBtn:active {
-  transform: scale(0.94);
-}
+/* .closeBtn kept for backward-compat reference — replaced by .closeBtnOuter */
 
 /* ── Scroll area ───────────────────────────────────────────── */
 
@@ -98,7 +112,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  padding: 0 20px 20px;
+  padding: 0 12px 20px;
 }
 
 /* ── Header ────────────────────────────────────────────────── */
@@ -110,9 +124,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 0 -20px 16px;
-  padding: 16px 20px;
-  padding-right: 48px;
+  margin: 0 -12px 12px;
+  padding: 14px 16px;
   background: var(--surface);
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
@@ -168,10 +181,13 @@
 /* ── Image ─────────────────────────────────────────────────── */
 
 .imageWrapper {
-  width: 100%;
-  border-radius: var(--radius-xl);
+  /* bleed to the modal edges — no side padding */
+  width: calc(100% + 24px);
+  margin-left: -12px;
+  margin-right: -12px;
+  margin-bottom: 14px;
+  border-radius: 0;
   overflow: hidden;
-  margin-bottom: 16px;
   background: linear-gradient(
     135deg,
     var(--surface-container) 0%,
