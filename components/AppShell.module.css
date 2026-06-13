@@ -41,11 +41,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 96px;
-  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  height: 120px;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  /* Smoothly fade out both the background and the blur towards the top */
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 100%);
   z-index: 950; /* below FloatingNav (1000) but above lists */
   pointer-events: none; /* let clicks pass through to list items */
 }
