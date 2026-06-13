@@ -51,8 +51,6 @@ export default function Feed({ posts, onPostClick, visible }) {
   return (
     <div className={styles.container} style={{ display: visible ? "flex" : "none" }}>
       <header className={styles.header}>
-        <h1 className={styles.title}>City Feed</h1>
-        
         <div className={styles.searchBar}>
           <Search size={20} className={styles.searchIcon} />
           <input

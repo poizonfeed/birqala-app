@@ -14,6 +14,7 @@ export default function PostCard({ post, onClose, onExpand }) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div
+        id="map-post-card"
         className={styles.card}
         onClick={(e) => {
           e.stopPropagation();

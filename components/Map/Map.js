@@ -92,17 +92,39 @@ function FocusSelectedPin({ selectedPost }) {
       const zoom = map.getZoom();
       const targetZoom = Math.max(14, zoom);
       
-      // Project lat/lng to pixel coords at target zoom
-      const targetPoint = map.project([selectedPost.lat, selectedPost.lng], targetZoom);
-      // Add y-offset (in pixels) to pan map down, pushing the pin upwards on the screen
-      const offsetPoint = targetPoint.add([0, 130]);
-      // Unproject back to lat/lng
-      const targetLatLng = map.unproject(offsetPoint, targetZoom);
+      const centerMap = () => {
+        const cardElement = document.getElementById("map-post-card");
+        const cardHeight = cardElement ? cardElement.offsetHeight : (selectedPost.image ? 330 : 150);
+        
+        // Calculate dynamic vertical offset based on map viewport and card height.
+        // The card floats 104px (bottom-padding of overlay container) above the bottom.
+        const viewportHeight = map.getSize().y || window.innerHeight || 600;
+        
+        // Position the pin tip just above the card (with a 55px gap) instead of centering it in the remaining space.
+        // Formula: offset = (card bottom offset + cardHeight + gap) - viewportHeight / 2
+        const gap = 55;
+        let offset = 104 + cardHeight + gap - viewportHeight / 2;
+        
+        // Clamp the offset to ensure the pin stays at least 40px below the top edge of the screen
+        const maxOffset = Math.max(0, viewportHeight / 2 - 40);
+        offset = Math.min(offset, maxOffset);
+        
+        // Project lat/lng to pixel coords at target zoom
+        const targetPoint = map.project([selectedPost.lat, selectedPost.lng], targetZoom);
+        // Add y-offset (in pixels) to pan map down, pushing the pin upwards on the screen
+        const offsetPoint = targetPoint.add([0, offset]);
+        // Unproject back to lat/lng
+        const targetLatLng = map.unproject(offsetPoint, targetZoom);
 
-      map.setView(targetLatLng, targetZoom, {
-        animate: true,
-        duration: 0.8,
-      });
+        map.setView(targetLatLng, targetZoom, {
+          animate: true,
+          duration: 0.8,
+        });
+      };
+
+      // Wait 50ms for React render and CSS transitions to mount the element in DOM
+      const timer = setTimeout(centerMap, 50);
+      return () => clearTimeout(timer);
     }
   }, [selectedPost, map]);
 

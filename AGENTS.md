@@ -98,6 +98,7 @@ This document tracks Antigravity's progress, changes made, and current status of
 - Built a scrollable list view (`Feed.js`) displaying all posts in `mockData.js`.
 - Implemented real-time search functionality by post text and tags.
 - Added dynamic sorting controls for "Top" (by upvotes), "Recent" (by timestamp), and "Relevance" (a simulated score combining time and upvotes).
+- Removed the "City Feed" header title from the layout to make the interface cleaner and maximize content space.
 
 ### Post Creation Flow
 - Replaced the temporary "Post Created!" state on the swipe gesture with a callback to trigger a full-screen `CreatePost` overlay.
@@ -116,7 +117,7 @@ This document tracks Antigravity's progress, changes made, and current status of
 - Clicking any button on the floating navigation menu now automatically closes open post detail dialogs or preview cards, resetting focus to the selected tab.
 
 #### Centering Offset Panning
-- Tapping "Tap to view on map" or clicking a pin on the map now uses a pixel-based offset (`130px` y-offset) to pan the map, centering the selected pin marker in the visible area *above* the preview card instead of directly in the center of the screen.
+- Tapping "Tap to view on map" or clicking a pin on the map now uses a dynamic screen-size-aware offset to pan the map, centering the selected pin marker tip exactly `55px` above the top of the post card (with viewport clamping to ensure it stays on screen), keeping visual focus compact and close to the card itself on both desktop and mobile viewports.
 
 #### Feed Scroll Padding
 - Replaced empty spacer `div` with a robust `padding-bottom: 120px` in `Feed.module.css` to prevent list elements from being cut off by the navigation bar.
