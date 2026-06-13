@@ -9,6 +9,7 @@ import PostDetail from "@/components/PostDetail/PostDetail";
 import Feed from "@/components/Feed/Feed";
 import Profile from "@/components/Profile/Profile";
 import CreatePost from "@/components/CreatePost/CreatePost";
+import PostSuccess from "@/components/CreatePost/PostSuccess";
 import styles from "./AppShell.module.css";
 
 const MapView = dynamic(() => import("@/components/Map/Map"), {
@@ -26,6 +27,7 @@ export default function AppShell() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [posts, setPosts] = useState(mockPosts);
 
   const handlePinClick = useCallback((post) => {
@@ -62,7 +64,10 @@ export default function AppShell() {
     };
     setPosts((prev) => [newPost, ...prev]);
     setIsCreatingPost(false);
-    setActiveTab("feed");
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3200);
   }, []);
 
   const handleTabChange = useCallback((tab) => {
@@ -112,6 +117,8 @@ export default function AppShell() {
           onSubmit={handlePostSubmit} 
         />
       )}
+
+      {showSuccess && <PostSuccess />}
 
       {activeTab !== "map" && <div className={styles.bottomBarBlur} />}
 
