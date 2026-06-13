@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -78,6 +78,34 @@ function MapClickHandler({ onMapClick }) {
 function MapRefBridge({ mapRef }) {
   const map = useMap();
   mapRef.current = map;
+  return null;
+}
+
+/**
+ * Automatically pans the map to center on the selected post.
+ */
+function FocusSelectedPin({ selectedPost }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (selectedPost) {
+      const zoom = map.getZoom();
+      const targetZoom = Math.max(14, zoom);
+      
+      // Project lat/lng to pixel coords at target zoom
+      const targetPoint = map.project([selectedPost.lat, selectedPost.lng], targetZoom);
+      // Add y-offset (in pixels) to pan map down, pushing the pin upwards on the screen
+      const offsetPoint = targetPoint.add([0, 130]);
+      // Unproject back to lat/lng
+      const targetLatLng = map.unproject(offsetPoint, targetZoom);
+
+      map.setView(targetLatLng, targetZoom, {
+        animate: true,
+        duration: 0.8,
+      });
+    }
+  }, [selectedPost, map]);
+
   return null;
 }
 
@@ -176,6 +204,7 @@ export default function MapView({ posts, onPinClick, selectedPostId, onMapClick 
         zoomControl={false}
       >
         <MapRefBridge mapRef={mapRef} />
+        <FocusSelectedPin selectedPost={posts.find((p) => p.id === selectedPostId)} />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'

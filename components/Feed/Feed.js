@@ -1,13 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, MapPin } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { Search, SlidersHorizontal, MapPin, ArrowUp } from "lucide-react";
 import styles from "./Feed.module.css";
 import { formatTimeAgo, getUpvoteColor } from "@/lib/mockData";
 
-export default function Feed({ posts, onPostClick }) {
+export default function Feed({ posts, onPostClick, visible }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("top"); // 'top', 'recent', 'relevance'
+  const listRef = useRef(null);
+
+  const handleSortClick = (mode) => {
+    setSortBy(mode);
+    if (listRef.current) {
+      listRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const filteredAndSortedPosts = useMemo(() => {
     let result = [...posts];
@@ -41,7 +49,7 @@ export default function Feed({ posts, onPostClick }) {
   }, [searchQuery, sortBy]);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ display: visible ? "flex" : "none" }}>
       <header className={styles.header}>
         <h1 className={styles.title}>City Feed</h1>
         
@@ -59,11 +67,11 @@ export default function Feed({ posts, onPostClick }) {
         <div className={styles.sortContainer}>
           <SlidersHorizontal size={18} className={styles.sortIcon} />
           <div className={styles.sortTabs}>
-            {["top", "recent", "relevance"].map((mode) => (
+             {["top", "recent", "relevance"].map((mode) => (
               <button
                 key={mode}
                 className={`${styles.sortTab} ${sortBy === mode ? styles.activeSort : ""}`}
-                onClick={() => setSortBy(mode)}
+                onClick={() => handleSortClick(mode)}
               >
                 {mode.charAt(0).toUpperCase() + mode.slice(1)}
               </button>
@@ -72,7 +80,7 @@ export default function Feed({ posts, onPostClick }) {
         </div>
       </header>
 
-      <div className={styles.list}>
+      <div className={styles.list} ref={listRef}>
         {filteredAndSortedPosts.length > 0 ? (
           filteredAndSortedPosts.map((post) => (
             <div key={post.id} className={styles.postCard} onClick={() => onPostClick(post)}>
@@ -86,7 +94,8 @@ export default function Feed({ posts, onPostClick }) {
                   className={styles.upvotes}
                   style={{ color: getUpvoteColor(post.upvotes) }}
                 >
-                  +{post.upvotes}
+                  <ArrowUp size={18} strokeWidth={2.5} className={styles.upvoteIcon} />
+                  <span>{post.upvotes}</span>
                 </div>
               </div>
               <p className={styles.text}>{post.text}</p>
@@ -114,7 +123,6 @@ export default function Feed({ posts, onPostClick }) {
             <p>No posts found.</p>
           </div>
         )}
-        <div className={styles.bottomPadding} />
       </div>
     </div>
   );

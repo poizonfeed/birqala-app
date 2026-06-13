@@ -107,6 +107,30 @@ This document tracks Antigravity's progress, changes made, and current status of
 ### Profile Placeholder
 - Added a simple `Profile.js` placeholder component to handle the routing state before full implementation.
 
+### UI Fixes and Refinements (Post Stage 2)
+
+#### Telegram-style Frosted Glass Bottom Panel
+- Added a rounded translucent blur panel at the bottom of the screen (`height: 96px`, `backdrop-filter: blur(20px)`, `border-radius: var(--radius-xl) var(--radius-xl) 0 0`) that renders on all tabs except the Map, creating a smooth transition as list elements scroll behind it. Fully optimized for iOS Safari by avoiding `mask-image` render conflicts.
+
+#### Tab Change Auto-Close
+- Clicking any button on the floating navigation menu now automatically closes open post detail dialogs or preview cards, resetting focus to the selected tab.
+
+#### Centering Offset Panning
+- Tapping "Tap to view on map" or clicking a pin on the map now uses a pixel-based offset (`130px` y-offset) to pan the map, centering the selected pin marker in the visible area *above* the preview card instead of directly in the center of the screen.
+
+#### Feed Scroll Padding
+- Replaced empty spacer `div` with a robust `padding-bottom: 120px` in `Feed.module.css` to prevent list elements from being cut off by the navigation bar.
+
+#### Feed Card Design Polish
+- Replaced the `+` character with the `ArrowUp` icon and aligned layout.
+- Styled Feed user avatars to use the system `primary-container` and `on-primary-container` theme colors, keeping them consistent with other sections.
+
+#### Feed Scroll Position Preservation
+- Updated `AppShell.js` to render the `Feed` component unconditionally, using a new `visible` prop to toggle its styling (`display: flex` or `display: none`) instead of mounting/unmounting it. This allows the browser to natively preserve the DOM state and scroll position of the feed list when the user switches to the Map and back.
+
+#### Feed Sort Click Auto-Scroll-to-Top
+- Integrated a `useRef` on the scrollable Feed list container and created a custom `handleSortClick` handler in `Feed.js`. Tapping on any of the sorting buttons ("Top", "Recent", "Relevance") will now automatically scroll the feed list smoothly back to the beginning, even if the clicked sort mode is already active.
+
 ---
 
 ## Up Next — Stage 3: Profile Page

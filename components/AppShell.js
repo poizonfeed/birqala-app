@@ -82,15 +82,15 @@ export default function AppShell() {
         />
       )}
 
-      {activeTab === "feed" && (
-        <Feed 
-          posts={posts}
-          onPostClick={(post) => {
-            setSelectedPost(post);
-            setIsDetailOpen(true);
-          }} 
-        />
-      )}
+      <Feed 
+        posts={posts}
+        onPostClick={(post) => {
+          setSelectedPost(post);
+          setIsDetailOpen(false);
+          setActiveTab("map");
+        }} 
+        visible={activeTab === "feed"}
+      />
 
       {activeTab === "profile" && <Profile />}
 
