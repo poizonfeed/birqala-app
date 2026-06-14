@@ -1,11 +1,65 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
-import { Search, SlidersHorizontal, MapPin, ArrowUp } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin, ArrowUp, X } from "lucide-react";
 import styles from "./Feed.module.css";
 import { formatTimeAgo, getUpvoteColor } from "@/lib/mockData";
+import { calculateDistanceInMeters } from "@/lib/utils";
 
-export default function Feed({ posts, onPostClick, visible }) {
+function FeedItem({ post, currentUser, currentLocation, onToggleUpvote, onPostClick }) {
+  const [distanceError, setDistanceError] = useState(false);
+
+  const distance = currentLocation ? calculateDistanceInMeters(currentLocation.lat, currentLocation.lng, post.lat, post.lng) : Infinity;
+  const isTooFar = distance > 100;
+  const hasUpvoted = currentUser?.upvotedPosts?.includes(post.id);
+  const baseUpvoteColor = getUpvoteColor(post.upvotes);
+  
+  const displayBg = hasUpvoted ? "var(--primary)" : "transparent";
+  const displayColor = hasUpvoted ? "#fff" : baseUpvoteColor;
+  const borderColor = hasUpvoted ? "var(--primary)" : baseUpvoteColor;
+
+  return (
+    <div className={styles.postCard} onClick={() => onPostClick(post)}>
+      <div className={styles.postHeader}>
+        <div className={styles.avatar}>{post.avatar}</div>
+        <div className={styles.meta}>
+          <span className={styles.username}>@{post.username}</span>
+          <span className={styles.time}>{formatTimeAgo(post.createdAt)}</span>
+        </div>
+        <div className={styles.upvoteWrapper}>
+          <div 
+            className={styles.upvotes}
+            style={{ backgroundColor: displayBg, color: displayColor, borderColor: borderColor }}
+            title="Upvotes"
+          >
+            <ArrowUp size={18} strokeWidth={2.5} className={styles.upvoteIcon} />
+            <span>{post.upvotes}</span>
+          </div>
+        </div>
+      </div>
+      <p className={styles.text}>{post.text}</p>
+      <div className={styles.tags}>
+        {post.tags.map((tag) => (
+          <span key={tag} className={styles.tag}>
+            #{tag}
+          </span>
+        ))}
+      </div>
+      {post.image && (
+        <div className={styles.imageWrapper}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={post.image} alt="Problem" className={styles.image} />
+        </div>
+      )}
+      <div className={styles.location}>
+        <MapPin size={14} />
+        <span>Tap to view on map</span>
+      </div>
+    </div>
+  );
+}
+
+export default function Feed({ posts, currentUser, currentLocation, onToggleUpvote, onPostClick, visible }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("top"); // 'top', 'recent', 'relevance'
   const listRef = useRef(null);
@@ -83,40 +137,14 @@ export default function Feed({ posts, onPostClick, visible }) {
       <div className={styles.list} ref={listRef}>
         {filteredAndSortedPosts.length > 0 ? (
           filteredAndSortedPosts.map((post) => (
-            <div key={post.id} className={styles.postCard} onClick={() => onPostClick(post)}>
-              <div className={styles.postHeader}>
-                <div className={styles.avatar}>{post.avatar}</div>
-                <div className={styles.meta}>
-                  <span className={styles.username}>@{post.username}</span>
-                  <span className={styles.time}>{formatTimeAgo(post.createdAt)}</span>
-                </div>
-                <div 
-                  className={styles.upvotes}
-                  style={{ color: getUpvoteColor(post.upvotes) }}
-                >
-                  <ArrowUp size={18} strokeWidth={2.5} className={styles.upvoteIcon} />
-                  <span>{post.upvotes}</span>
-                </div>
-              </div>
-              <p className={styles.text}>{post.text}</p>
-              <div className={styles.tags}>
-                {post.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-              {post.image && (
-                <div className={styles.imageWrapper}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={post.image} alt="Problem" className={styles.image} />
-                </div>
-              )}
-              <div className={styles.location}>
-                <MapPin size={14} />
-                <span>Tap to view on map</span>
-              </div>
-            </div>
+            <FeedItem
+              key={post.id}
+              post={post}
+              currentUser={currentUser}
+              currentLocation={currentLocation}
+              onToggleUpvote={onToggleUpvote}
+              onPostClick={onPostClick}
+            />
           ))
         ) : (
           <div className={styles.emptyState}>

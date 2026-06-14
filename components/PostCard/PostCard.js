@@ -1,15 +1,39 @@
 "use client";
 
+import { useState } from "react";
 import { getUpvoteColor, formatTimeAgo } from "@/lib/mockData";
-import { ArrowUp, Clock, MessageCircle } from "lucide-react";
+import { ArrowUp, Clock, MessageCircle, X } from "lucide-react";
+import { calculateDistanceInMeters } from "@/lib/utils";
 import styles from "./PostCard.module.css";
 
-export default function PostCard({ post, onClose, onExpand }) {
+export default function PostCard({ post, currentUser, currentLocation, onToggleUpvote, onClose, onExpand }) {
   if (!post) return null;
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   const truncated =
     post.text.length > 120 ? post.text.slice(0, 120) + "…" : post.text;
-  const upvoteColor = getUpvoteColor(post.upvotes);
+
+  const distance = currentLocation ? calculateDistanceInMeters(currentLocation.lat, currentLocation.lng, post.lat, post.lng) : Infinity;
+  const isTooFar = distance > 100;
+  const hasUpvoted = currentUser?.upvotedPosts?.includes(post.id);
+  const baseUpvoteColor = getUpvoteColor(post.upvotes);
+  
+  const displayBg = hasUpvoted ? "var(--primary)" : "transparent";
+  const displayColor = errorMessage ? "#9e9e9e" : (hasUpvoted ? "#fff" : baseUpvoteColor);
+  const borderColor = errorMessage ? "#9e9e9e" : (hasUpvoted ? "var(--primary)" : baseUpvoteColor);
+
+  const handleUpvoteClick = (e) => {
+    e.stopPropagation();
+    if (post.username === currentUser?.username) {
+      setErrorMessage("You cannot verify your own issue.");
+    } else if (isTooFar) {
+      setErrorMessage("Must be within 100m to verify.");
+    } else {
+      setErrorMessage("");
+      onToggleUpvote(post.id);
+    }
+  };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -72,9 +96,24 @@ export default function PostCard({ post, onClose, onExpand }) {
               <MessageCircle size={18} />
               <span>{post.comments.length}</span>
             </div>
-            <div className={styles.upvotes} style={{ color: upvoteColor }}>
-              <ArrowUp size={18} strokeWidth={2.5} />
-              <span>{post.upvotes}</span>
+            <div className={styles.upvoteWrapper}>
+              <button
+                className={`${styles.upvotes} ${errorMessage ? styles.hasError : ""}`}
+                style={{ backgroundColor: displayBg, color: displayColor, borderColor: borderColor }}
+                onClick={handleUpvoteClick}
+                title="Verify this issue"
+              >
+                <ArrowUp size={18} strokeWidth={2.5} />
+                <span>{post.upvotes}</span>
+              </button>
+              {errorMessage && (
+                <div className={styles.errorPopup}>
+                  <span>{errorMessage}</span>
+                  <button className={styles.closeError} onClick={(e) => { e.stopPropagation(); setErrorMessage(""); }}>
+                    <X size={12} strokeWidth={3} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

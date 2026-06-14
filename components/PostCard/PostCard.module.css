@@ -181,6 +181,68 @@
   font-size: 16px;
   font-weight: 700;
   flex-shrink: 0;
+  background: transparent;
+  border: 2px solid transparent;
+  padding: 4px 10px;
+  border-radius: var(--radius-full, 999px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.upvotes.disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.upvoteWrapper {
+  position: relative;
+  display: flex;
+}
+
+.errorPopup {
+  position: absolute;
+  bottom: calc(100% + 6px); /* Pop up from bottom in PostCard to avoid clipping */
+  right: 0;
+  background: var(--surface-container-highest, #333);
+  border: 1px solid var(--outline-variant, #444);
+  border-radius: var(--radius-sm, 6px);
+  padding: 6px 8px 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 100;
+  animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.errorPopup span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--on-surface, #fff);
+}
+
+.closeError {
+  background: none;
+  border: none;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--on-surface-variant, #aaa);
+  border-radius: var(--radius-sm, 4px);
+  transition: all 0.2s;
+}
+
+.closeError:hover {
+  background: var(--surface-container, #444);
+  color: var(--on-surface, #fff);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .stats {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { mockPosts, mockUser } from "@/lib/mockData";
 import FloatingNav from "@/components/FloatingNav/FloatingNav";
@@ -30,6 +30,33 @@ export default function AppShell() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [posts, setPosts] = useState(mockPosts);
   const [currentUser, setCurrentUser] = useState(mockUser);
+  const [currentLocation, setCurrentLocation] = useState(null);
+
+  useEffect(() => {
+    if (currentUser?.preferences?.useFakeLocation) {
+      setCurrentLocation({ 
+        lat: currentUser.preferences.fakeLat, 
+        lng: currentUser.preferences.fakeLng 
+      });
+      return;
+    }
+
+    if ("geolocation" in navigator) {
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Error watching location:", error);
+        },
+        { enableHighAccuracy: true, maximumAge: 5000 }
+      );
+      return () => navigator.geolocation.clearWatch(watchId);
+    }
+  }, [currentUser]);
 
   const handlePinClick = useCallback((post) => {
     setSelectedPost(post);
@@ -129,6 +156,35 @@ export default function AppShell() {
     });
   }, [currentUser]);
 
+  const handleToggleUpvote = useCallback((postId) => {
+    const hasUpvoted = currentUser.upvotedPosts?.includes(postId);
+    const delta = hasUpvoted ? -1 : 1;
+
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => {
+        if (p.id === postId) {
+          return { ...p, upvotes: Math.max(0, p.upvotes + delta) };
+        }
+        return p;
+      })
+    );
+
+    setSelectedPost((prevSelected) => {
+      if (prevSelected && prevSelected.id === postId) {
+        return { ...prevSelected, upvotes: Math.max(0, prevSelected.upvotes + delta) };
+      }
+      return prevSelected;
+    });
+
+    setCurrentUser((prevUser) => {
+      const newUpvoted = hasUpvoted 
+        ? (prevUser.upvotedPosts || []).filter(id => id !== postId)
+        : [...(prevUser.upvotedPosts || []), postId];
+        
+      return { ...prevUser, upvotedPosts: newUpvoted };
+    });
+  }, [currentUser]);
+
   const handleTabChange = useCallback((tab) => {
     setActiveTab(tab);
     setSelectedPost(null);
@@ -139,6 +195,7 @@ export default function AppShell() {
     <div className={styles.shell}>
       <MapView
         currentUser={currentUser}
+        currentLocation={currentLocation}
         posts={posts}
         onPinClick={handlePinClick}
         selectedPostId={selectedPost?.id ?? null}
@@ -148,6 +205,9 @@ export default function AppShell() {
 
       <Feed 
         posts={posts}
+        currentUser={currentUser}
+        currentLocation={currentLocation}
+        onToggleUpvote={handleToggleUpvote}
         onPostClick={(post) => {
           setSelectedPost(post);
           setIsDetailOpen(false);
@@ -165,6 +225,9 @@ export default function AppShell() {
       {activeTab === "map" && selectedPost && !isDetailOpen && (
         <PostCard
           post={selectedPost}
+          currentUser={currentUser}
+          currentLocation={currentLocation}
+          onToggleUpvote={handleToggleUpvote}
           onClose={handleCardClose}
           onExpand={handleCardExpand}
         />
@@ -173,6 +236,9 @@ export default function AppShell() {
       {isDetailOpen && selectedPost && (
         <PostDetail 
           post={selectedPost} 
+          currentUser={currentUser}
+          currentLocation={currentLocation}
+          onToggleUpvote={handleToggleUpvote}
           onClose={handleCloseAll} 
           onAddComment={handleCommentSubmit} 
         />
