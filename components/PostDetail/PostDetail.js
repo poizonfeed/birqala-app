@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { getUpvoteColor, formatTimeAgo } from "@/lib/mockData";
 import { ArrowUp, Clock, X, MessageCircle, Send } from "lucide-react";
 import styles from "./PostDetail.module.css";
 
-export default function PostDetail({ post, onClose }) {
+export default function PostDetail({ post, onClose, onAddComment }) {
   if (!post) return null;
+
+  const [commentText, setCommentText] = useState("");
 
   const commentsRef = useRef(null);
   const upvoteColor = getUpvoteColor(post.upvotes);
@@ -130,18 +132,33 @@ export default function PostDetail({ post, onClose }) {
             </div>
           </div>
 
-           {/* Comment input bar */}
-          <div className={styles.commentInput}>
+          {/* Comment input bar */}
+          <form 
+            className={styles.commentInput} 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!commentText.trim()) return;
+              onAddComment(post.id, commentText.trim());
+              setCommentText("");
+            }}
+          >
             <input
               type="text"
               placeholder="Add a comment…"
               className={styles.input}
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
               onKeyDown={(e) => e.stopPropagation()}
             />
-            <button className={styles.sendBtn} aria-label="Send comment">
+            <button 
+              type="submit" 
+              className={styles.sendBtn} 
+              aria-label="Send comment"
+              disabled={!commentText.trim()}
+            >
               <Send size={18} />
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

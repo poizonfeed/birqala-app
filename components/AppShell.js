@@ -64,11 +64,69 @@ export default function AppShell() {
       comments: [],
     };
     setPosts((prev) => [newPost, ...prev]);
+
+    // Update currentUser stats: increment postsCreated, add XP, and append history item
+    setCurrentUser((prevUser) => {
+      const postsCreated = prevUser.stats.postsCreated + 1;
+      const xpDelta = 10;
+      const newXp = prevUser.xp + xpDelta;
+      const level = newXp >= 100 ? "Active Citizen" : "New Citizen";
+
+      const newHistoryItem = {
+        id: Date.now(),
+        type: "post",
+        date: newPost.createdAt,
+        title: `Reported ${newPostData.text.slice(0, 30)}...`,
+        xpDelta,
+      };
+
+      return {
+        ...prevUser,
+        xp: newXp,
+        level,
+        stats: {
+          ...prevUser.stats,
+          postsCreated,
+        },
+        history: [newHistoryItem, ...prevUser.history],
+      };
+    });
+
     setIsCreatingPost(false);
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
     }, 3200);
+  }, [currentUser]);
+
+  const handleCommentSubmit = useCallback((postId, commentText) => {
+    const newComment = {
+      username: currentUser.username,
+      text: commentText,
+      createdAt: new Date().toISOString(),
+    };
+
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => {
+        if (p.id === postId) {
+          return {
+            ...p,
+            comments: [...p.comments, newComment],
+          };
+        }
+        return p;
+      })
+    );
+
+    setSelectedPost((prevSelected) => {
+      if (prevSelected && prevSelected.id === postId) {
+        return {
+          ...prevSelected,
+          comments: [...prevSelected.comments, newComment],
+        };
+      }
+      return prevSelected;
+    });
   }, [currentUser]);
 
   const handleTabChange = useCallback((tab) => {
@@ -113,7 +171,11 @@ export default function AppShell() {
       )}
 
       {isDetailOpen && selectedPost && (
-        <PostDetail post={selectedPost} onClose={handleCloseAll} />
+        <PostDetail 
+          post={selectedPost} 
+          onClose={handleCloseAll} 
+          onAddComment={handleCommentSubmit} 
+        />
       )}
 
       {isCreatingPost && (

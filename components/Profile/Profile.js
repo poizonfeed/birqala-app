@@ -73,7 +73,7 @@ export default function Profile({ visible, currentUser, onUpdateUser }) {
             </div>
             <div className={styles.badgeHighlight}>
               <Target size={16} className={styles.badgeIconHighlight} />
-              <span>Top {currentUser.rank} this week</span>
+              <span>{currentUser.rank && currentUser.rank !== "-" ? `Top ${currentUser.rank} this week` : "Unranked this week"}</span>
             </div>
           </div>
           

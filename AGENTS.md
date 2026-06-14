@@ -184,6 +184,12 @@ This document tracks Antigravity's progress, changes made, and current status of
 - Implemented a floating settings card menu centered on the screen with a blurred backdrop overlay, toggled by the Settings gear icon on the Profile tab.
 - Users can edit their Full Name and Username inside the card. Saving changes dynamically updates the profile details and generates new initials for the user avatar.
 
+### Default Profile & Stats Setup
+- Set default mock user's name and username to "test" and "@test" respectively.
+- Cleared all fake default user stats (postsCreated, verifications, resolvedIssues), XP, and history.
+- Dynamic Post-Increment: Configured post submission handler in AppShell.js to dynamically increment the user's postsCreated count, award 10 XP, recalculate citizen level, and append a corresponding activity to their history timeline.
+- Clean Rank Badge Display: Adjusted the rank badge on the Profile tab to display "Unranked this week" if the user has no rank or a rank value of "-".
+
 ---
 
 ## Up Next — Stage 4: Geolocation and Post Creation

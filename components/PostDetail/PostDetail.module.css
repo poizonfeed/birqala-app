@@ -434,3 +434,10 @@
 .sendBtn:active {
   transform: scale(0.92);
 }
+
+.sendBtn:disabled {
+  background: var(--surface-container-high);
+  color: var(--outline);
+  cursor: not-allowed;
+  transform: none;
+}
