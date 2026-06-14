@@ -71,7 +71,7 @@ export default function PostDetail({ post, onClose }) {
                   style={{ color: upvoteColor, borderColor: upvoteColor }}
                 >
                   <ArrowUp size={20} strokeWidth={2.5} />
-                  <span>{post.upvotes} confirmations</span>
+                  <span>{post.upvotes}</span>
                 </div>
                 <button
                   className={`${styles.commentsBtn} ${

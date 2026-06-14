@@ -66,7 +66,8 @@ This document tracks Antigravity's progress, changes made, and current status of
 
 ### Comments Features
 - Added a `MessageCircle` comments icon in `PostCard` to the left of the upvote counter. It displays the comment count, is unclickable, and dims to `0.35` opacity if there are no comments.
-- Added a `commentsBtn` in `PostDetail` next to the confirmations container. It is a fully styled button (with hover scale and click feedback) showing the total comments, and clicking it smoothly scrolls down to the comments section via React refs.
+- Added a `commentsBtn` in `PostDetail` next to the upvotes indicator. It is a fully styled button (with hover scale and click feedback) showing the total comments, and clicking it smoothly scrolls down to the comments section via React refs.
+- Removed the word "confirmations" from the upvotes display in `PostDetail.js` to simplify the layout.
 
 ---
 
