@@ -199,8 +199,25 @@ This document tracks Antigravity's progress, changes made, and current status of
 
 ---
 
-## Up Next — Stage 4: Geolocation and Post Creation
+## Stage 4 — Geolocation and Geofenced Upvoting (Completed)
 
-- Geolocation support to determine user's current coordinates.
-- Camera and photo support for creating a post in the Create Post flow.
+### Geolocation & Fake GPS
+- Lifted HTML5 Geolocation tracking into `AppShell.js` to provide global `currentLocation` to the entire application.
+- Added a "My Location" button on the map to center the view on the user's current GPS location.
+- Added a pulsing blue dot marker to the map indicating the user's real-time position.
+- Added "Fake Geolocation" toggle in the Settings menu. When enabled, users can tap anywhere on an interactive map preview to set custom mock coordinates, bypassing the browser's real GPS.
+
+### Geofenced Upvoting System
+- Added Haversine distance calculation in `lib/utils.js` to determine the real-world distance between the user's location and a post's location.
+- Enforced a **100-meter** radius limit for upvoting posts to prevent abuse and fake boosting.
+- **Interactive UI:** If the user is >100m away or if they authored the post, clicking the upvote button turns it gray and displays a sleek, absolute-positioned inline popup error (e.g., "Must be within 100m to verify.").
+- **Upvote Toggling:** Users within the radius can click to upvote (adds to `mockUser.upvotedPosts`), turning the entire button solid primary green with white text/icon. Clicking again removes the upvote.
+- **Feed Integration:** Display-only upvote stats are shown in the Feed list with the solid green active style applied if the user has verified the post.
+
+---
+
+## Up Next — Stage 5: Leaderboard & XP
+
+- Implement a functional leaderboard.
+- Expand the XP system for verification and issue resolution.
 
