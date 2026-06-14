@@ -1,19 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Camera, MapPin, CheckCircle2 } from "lucide-react";
 import styles from "./CreatePost.module.css";
 
-export default function CreatePost({ onClose, onSubmit }) {
+export default function CreatePost({ currentUser, onClose, onSubmit }) {
   const [description, setDescription] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [location, setLocation] = useState({ lat: null, lng: null });
+  const [locationLoading, setLocationLoading] = useState(true);
+  const fileInputRef = useRef(null);
 
   const tags = ["trash", "streetlight", "sidewalk", "pothole", "graffiti", "other"];
 
+  const [locationError, setLocationError] = useState("");
+
+  const requestLocation = () => {
+    setLocationLoading(true);
+    setLocationError("");
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          setLocationLoading(false);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          let errMsg = "Failed to get location.";
+          if (error.code === 1) errMsg = "Location access denied.";
+          if (error.code === 2) errMsg = "Position unavailable.";
+          if (error.code === 3) errMsg = "Location request timed out.";
+          
+          setLocationError(errMsg);
+          setLocation({ lat: 51.1282, lng: 71.4306 }); // Fallback to Astana
+          setLocationLoading(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      setLocationError("Geolocation not supported.");
+      setLocation({ lat: 51.1282, lng: 71.4306 });
+      setLocationLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Check if user has fake location enabled
+    if (currentUser?.preferences?.useFakeLocation) {
+      setLocation({ 
+        lat: currentUser.preferences.fakeLat, 
+        lng: currentUser.preferences.fakeLng 
+      });
+      setLocationLoading(false);
+      return;
+    }
+
+    // Otherwise, request real location on mount
+    requestLocation();
+  }, [currentUser]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!description || !selectedTag) return;
+    if (!description || !selectedTag || locationLoading) return;
     
     setIsSubmitting(true);
     // Simulate network request
@@ -22,7 +86,9 @@ export default function CreatePost({ onClose, onSubmit }) {
         text: description,
         tags: [selectedTag],
         severity: "medium", // Default
-        image: "/images/test_placeholder.png",
+        image: imagePreview || "/images/test_placeholder.png",
+        lat: location.lat,
+        lng: location.lng,
       });
       setIsSubmitting(false);
     }, 1000);
@@ -46,19 +112,34 @@ export default function CreatePost({ onClose, onSubmit }) {
         </header>
 
         <div className={styles.content}>
-          <div className={styles.photoUpload}>
-            <div className={styles.uploadedContainer}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src="/images/test_placeholder.png" 
-                alt="Test upload" 
-                className={styles.uploadedImage} 
-              />
-              <div className={styles.imageOverlay}>
-                <Camera size={24} />
-                <span>Test Image Uploaded</span>
+          <div className={styles.photoUpload} onClick={() => fileInputRef.current?.click()}>
+            <input 
+              type="file" 
+              accept="image/*" 
+              capture="environment" 
+              ref={fileInputRef} 
+              style={{ display: "none" }} 
+              onChange={handleImageChange}
+            />
+            {imagePreview ? (
+              <div className={styles.uploadedContainer}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={imagePreview} 
+                  alt="Captured" 
+                  className={styles.uploadedImage} 
+                />
+                <div className={styles.imageOverlay}>
+                  <Camera size={24} />
+                  <span>Tap to Retake</span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className={styles.photoPlaceholder}>
+                <Camera size={32} />
+                <span>Take Photo</span>
+              </div>
+            )}
           </div>
 
           <div className={styles.section}>
@@ -96,9 +177,26 @@ export default function CreatePost({ onClose, onSubmit }) {
                 <MapPin size={24} className={styles.pinIcon} />
               </div>
               <div className={styles.locationText}>
-                <strong>Current Location</strong>
-                <span>Astana, Kazakhstan</span>
+                <strong>{locationError ? "Location Error" : "Current Location"}</strong>
+                <span style={{ color: locationError ? "var(--error, #d32f2f)" : "var(--text-secondary)" }}>
+                  {locationLoading 
+                    ? "Locating..." 
+                    : locationError 
+                      ? `${locationError} (Fallback: Astana)` 
+                      : `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`}
+                </span>
               </div>
+              {(!currentUser?.preferences?.useFakeLocation) && (
+                <button 
+                  className={styles.retryLocationBtn} 
+                  onClick={requestLocation}
+                  disabled={locationLoading}
+                  aria-label="Retry Location"
+                  style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+                >
+                  {locationLoading ? "..." : "Retry"}
+                </button>
+              )}
             </div>
           </div>
         </div>

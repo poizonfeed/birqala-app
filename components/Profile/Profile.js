@@ -3,7 +3,10 @@
 import { useState } from "react";
 import styles from "./Profile.module.css";
 import { formatTimeAgo } from "@/lib/mockData";
-import { Medal, Target, Zap, Settings, CheckCircle2, CheckSquare, ImagePlus, Bell, X } from "lucide-react";
+import { Medal, Target, Zap, Settings, CheckCircle2, CheckSquare, ImagePlus, Bell, X, MapPin } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const LocationPickerMap = dynamic(() => import("./LocationPickerMap"), { ssr: false, loading: () => <div style={{height: "180px", width: "100%", background: "#eee", borderRadius: "12px", marginTop: "8px"}} /> });
 
 // Helper function to dynamically generate initials for the avatar
 function getInitials(name) {
@@ -17,6 +20,9 @@ export default function Profile({ visible, currentUser, onUpdateUser }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editFullName, setEditFullName] = useState(currentUser.fullName);
   const [editUsername, setEditUsername] = useState(currentUser.username);
+  const [editUseFakeLocation, setEditUseFakeLocation] = useState(currentUser.preferences?.useFakeLocation || false);
+  const [editFakeLat, setEditFakeLat] = useState(currentUser.preferences?.fakeLat || 51.1282);
+  const [editFakeLng, setEditFakeLng] = useState(currentUser.preferences?.fakeLng || 71.4306);
 
   const handleSaveSettings = (e) => {
     e.preventDefault();
@@ -27,6 +33,12 @@ export default function Profile({ visible, currentUser, onUpdateUser }) {
       fullName: editFullName.trim(),
       username: editUsername.trim(),
       avatar: getInitials(editFullName.trim()),
+      preferences: {
+        ...currentUser.preferences,
+        useFakeLocation: editUseFakeLocation,
+        fakeLat: editFakeLat,
+        fakeLng: editFakeLng,
+      }
     });
     setIsSettingsOpen(false);
   };
@@ -34,6 +46,9 @@ export default function Profile({ visible, currentUser, onUpdateUser }) {
   const handleOpenSettings = () => {
     setEditFullName(currentUser.fullName);
     setEditUsername(currentUser.username);
+    setEditUseFakeLocation(currentUser.preferences?.useFakeLocation || false);
+    setEditFakeLat(currentUser.preferences?.fakeLat || 51.1282);
+    setEditFakeLng(currentUser.preferences?.fakeLng || 71.4306);
     setIsSettingsOpen(true);
   };
 
@@ -166,6 +181,32 @@ export default function Profile({ visible, currentUser, onUpdateUser }) {
                   />
                 </div>
               </div>
+
+              <div className={styles.settingsField}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={editUseFakeLocation}
+                    onChange={(e) => setEditUseFakeLocation(e.target.checked)}
+                  />
+                  <span>Use Fake Geolocation (Testing)</span>
+                </label>
+              </div>
+
+              {editUseFakeLocation && (
+                <div className={styles.settingsField}>
+                  <label>Select Fake Location</label>
+                  <p className={styles.helperText}>Tap the map to set your location.</p>
+                  <LocationPickerMap 
+                    lat={editFakeLat} 
+                    lng={editFakeLng} 
+                    onLocationSelect={(lat, lng) => {
+                      setEditFakeLat(lat);
+                      setEditFakeLng(lng);
+                    }} 
+                  />
+                </div>
+              )}
             </div>
 
             <footer className={styles.settingsFooter}>

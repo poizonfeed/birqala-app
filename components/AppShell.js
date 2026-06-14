@@ -56,8 +56,8 @@ export default function AppShell() {
       avatar: currentUser.avatar,
       ...newPostData,
       upvotes: 0,
-      lat: 51.1282,
-      lng: 71.4306,
+      lat: newPostData.lat || 51.1282,
+      lng: newPostData.lng || 71.4306,
       image: newPostData.image || "/images/test_placeholder.png",
       status: null,
       createdAt: new Date().toISOString(),
@@ -137,14 +137,13 @@ export default function AppShell() {
 
   return (
     <div className={styles.shell}>
-      {activeTab === "map" && (
-        <MapView
-          posts={posts}
-          onPinClick={handlePinClick}
-          selectedPostId={selectedPost?.id ?? null}
-          onMapClick={handleCardClose}
-        />
-      )}
+      <MapView
+        posts={posts}
+        onPinClick={handlePinClick}
+        selectedPostId={selectedPost?.id ?? null}
+        onMapClick={handleCardClose}
+        visible={activeTab === "map"}
+      />
 
       <Feed 
         posts={posts}
@@ -180,6 +179,7 @@ export default function AppShell() {
 
       {isCreatingPost && (
         <CreatePost 
+          currentUser={currentUser}
           onClose={() => setIsCreatingPost(false)} 
           onSubmit={handlePostSubmit} 
         />

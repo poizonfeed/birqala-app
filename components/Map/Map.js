@@ -246,11 +246,20 @@ function MapControls({ mapRef }) {
   );
 }
 
-export default function MapView({ posts, onPinClick, selectedPostId, onMapClick }) {
+export default function MapView({ posts, onPinClick, selectedPostId, onMapClick, visible }) {
   const mapRef = useRef(null);
 
+  useEffect(() => {
+    if (visible && mapRef.current) {
+      const timer = setTimeout(() => {
+        mapRef.current.invalidateSize();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [visible]);
+
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} style={{ display: visible ? "block" : "none" }}>
       <div className={styles.watermark}>BirQala</div>
       <MapContainer
         center={ASTANA_CENTER}
