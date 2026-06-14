@@ -15,6 +15,12 @@
   box-shadow: var(--shadow-sm);
 }
 
+.headerInner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .title {
   margin: 0 0 1rem 0;
   font-size: 1.75rem;
@@ -105,6 +111,7 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid var(--outline);
+  flex-shrink: 0;
 }
 
 .postCard:active {
@@ -211,6 +218,55 @@
   text-align: center;
   color: var(--text-secondary);
   padding: 2rem;
+}
+
+/* ── Responsive Grid & Layout ─────────────────────────────── */
+
+@media (min-width: 640px) {
+  .headerInner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .searchBar {
+    margin-bottom: 0;
+    flex: 1;
+    max-width: 420px;
+  }
+
+  .sortContainer {
+    flex-shrink: 0;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+    padding: 1.5rem 1.5rem 120px 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .list {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .headerInner {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
 }
 
 

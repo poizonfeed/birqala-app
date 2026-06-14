@@ -57,7 +57,7 @@ export default function AppShell() {
       upvotes: 0,
       lat: 51.1282,
       lng: 71.4306,
-      image: null,
+      image: newPostData.image || "/images/test_placeholder.png",
       status: null,
       createdAt: new Date().toISOString(),
       comments: [],

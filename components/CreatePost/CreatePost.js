@@ -22,6 +22,7 @@ export default function CreatePost({ onClose, onSubmit }) {
         text: description,
         tags: [selectedTag],
         severity: "medium", // Default
+        image: "/images/test_placeholder.png",
       });
       setIsSubmitting(false);
     }, 1000);
@@ -46,9 +47,17 @@ export default function CreatePost({ onClose, onSubmit }) {
 
         <div className={styles.content}>
           <div className={styles.photoUpload}>
-            <div className={styles.photoPlaceholder}>
-              <Camera size={32} />
-              <span>Tap to take a photo</span>
+            <div className={styles.uploadedContainer}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src="/images/test_placeholder.png" 
+                alt="Test upload" 
+                className={styles.uploadedImage} 
+              />
+              <div className={styles.imageOverlay}>
+                <Camera size={24} />
+                <span>Test Image Uploaded</span>
+              </div>
             </div>
           </div>
 

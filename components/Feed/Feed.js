@@ -51,29 +51,31 @@ export default function Feed({ posts, onPostClick, visible }) {
   return (
     <div className={styles.container} style={{ display: visible ? "flex" : "none" }}>
       <header className={styles.header}>
-        <div className={styles.searchBar}>
-          <Search size={20} className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Search problems, tags..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div>
+        <div className={styles.headerInner}>
+          <div className={styles.searchBar}>
+            <Search size={20} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search problems, tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
 
-        <div className={styles.sortContainer}>
-          <SlidersHorizontal size={18} className={styles.sortIcon} />
-          <div className={styles.sortTabs}>
-             {["top", "recent", "relevance"].map((mode) => (
-              <button
-                key={mode}
-                className={`${styles.sortTab} ${sortBy === mode ? styles.activeSort : ""}`}
-                onClick={() => handleSortClick(mode)}
-              >
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
-              </button>
-            ))}
+          <div className={styles.sortContainer}>
+            <SlidersHorizontal size={18} className={styles.sortIcon} />
+            <div className={styles.sortTabs}>
+               {["top", "recent", "relevance"].map((mode) => (
+                <button
+                  key={mode}
+                  className={`${styles.sortTab} ${sortBy === mode ? styles.activeSort : ""}`}
+                  onClick={() => handleSortClick(mode)}
+                >
+                  {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>
