@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { getUpvoteColor, getPinSize } from "@/lib/mockData";
@@ -61,6 +62,38 @@ function createPinIcon(upvotes, isSelected) {
     `,
     iconSize: [displaySize, displaySize],
     iconAnchor: [displaySize / 2, displaySize],
+  });
+}
+
+/**
+ * Custom cluster icon for grouped markers
+ */
+function createClusterCustomIcon(cluster) {
+  const count = cluster.getChildCount();
+  const size = Math.min(60, 36 + (count * 1.5)); // Dynamic size based on count, max 60px
+  
+  return L.divIcon({
+    html: `
+      <div style="
+        background-color: var(--primary);
+        color: var(--on-primary);
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: ${Math.max(14, size * 0.35)}px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        border: 3px solid white;
+        transition: transform 0.2s;
+      ">
+        ${count}
+      </div>
+    `,
+    className: "custom-marker-cluster",
+    iconSize: L.point(size, size, true),
   });
 }
 
@@ -219,6 +252,7 @@ export default function MapView({ posts, onPinClick, selectedPostId, onMapClick 
 
   return (
     <div className={styles.wrapper}>
+      <div className={styles.watermark}>BirQala</div>
       <MapContainer
         center={ASTANA_CENTER}
         zoom={DEFAULT_ZOOM}
@@ -232,14 +266,21 @@ export default function MapView({ posts, onPinClick, selectedPostId, onMapClick 
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
         />
         <MapClickHandler onMapClick={onMapClick} />
-        {posts.map((post) => (
-          <Marker
-            key={post.id}
-            position={[post.lat, post.lng]}
-            icon={createPinIcon(post.upvotes, post.id === selectedPostId)}
-            eventHandlers={{ click: () => onPinClick(post) }}
-          />
-        ))}
+        <MarkerClusterGroup
+          iconCreateFunction={createClusterCustomIcon}
+          maxClusterRadius={45}
+          spiderfyOnMaxZoom={true}
+          showCoverageOnHover={false}
+        >
+          {posts.map((post) => (
+            <Marker
+              key={post.id}
+              position={[post.lat, post.lng]}
+              icon={createPinIcon(post.upvotes, post.id === selectedPostId)}
+              eventHandlers={{ click: () => onPinClick(post) }}
+            />
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
 
       {/* Custom controls rendered outside Leaflet, absolutely positioned on the right-center */}
