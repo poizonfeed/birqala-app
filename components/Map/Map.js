@@ -149,9 +149,8 @@ function FocusSelectedPin({ selectedPost }) {
         // Unproject back to lat/lng
         const targetLatLng = map.unproject(offsetPoint, targetZoom);
 
-        map.setView(targetLatLng, targetZoom, {
-          animate: true,
-          duration: 0.8,
+        map.flyTo(targetLatLng, targetZoom, {
+          duration: 1.0,
         });
       };
 
@@ -179,7 +178,7 @@ function MapControls({ mapRef }) {
     });
   }, [mapRef]);
   const goToAstana = useCallback(() => {
-    mapRef.current?.setView(ASTANA_CENTER, DEFAULT_ZOOM, { animate: true });
+    mapRef.current?.flyTo(ASTANA_CENTER, DEFAULT_ZOOM, { duration: 1.0 });
   }, [mapRef]);
 
   return (

@@ -190,6 +190,13 @@ This document tracks Antigravity's progress, changes made, and current status of
 - Dynamic Post-Increment: Configured post submission handler in AppShell.js to dynamically increment the user's postsCreated count, award 10 XP, recalculate citizen level, and append a corresponding activity to their history timeline.
 - Clean Rank Badge Display: Adjusted the rank badge on the Profile tab to display "Unranked this week" if the user has no rank or a rank value of "-".
 
+### Writing Comments
+- Implemented state binding, form handling, and post submission callbacks in PostDetail.js and AppShell.js to enable users to write and append comments to posts.
+- Added premium disabled styles to the send comment button when the comment text field is empty.
+
+### Smooth Map Zoom
+- Replaced Leaflet map's standard setView panning with flyTo when clicking on a marker pin or the Astana center reset button. This delivers a cinematic, smooth pan-and-zoom transition effect.
+
 ---
 
 ## Up Next — Stage 4: Geolocation and Post Creation
