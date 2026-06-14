@@ -123,7 +123,7 @@ function FocusSelectedPin({ selectedPost }) {
   useEffect(() => {
     if (selectedPost) {
       const zoom = map.getZoom();
-      const targetZoom = Math.max(14, zoom);
+      const targetZoom = Math.max(18, zoom);
       
       const centerMap = () => {
         const cardElement = document.getElementById("map-post-card");

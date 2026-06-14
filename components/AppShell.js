@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { mockPosts } from "@/lib/mockData";
+import { mockPosts, mockUser } from "@/lib/mockData";
 import FloatingNav from "@/components/FloatingNav/FloatingNav";
 import PostCard from "@/components/PostCard/PostCard";
 import PostDetail from "@/components/PostDetail/PostDetail";
@@ -29,6 +29,7 @@ export default function AppShell() {
   const [isCreatingPost, setIsCreatingPost] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [posts, setPosts] = useState(mockPosts);
+  const [currentUser, setCurrentUser] = useState(mockUser);
 
   const handlePinClick = useCallback((post) => {
     setSelectedPost(post);
@@ -51,8 +52,8 @@ export default function AppShell() {
   const handlePostSubmit = useCallback((newPostData) => {
     const newPost = {
       id: Date.now(),
-      username: "Current_User",
-      avatar: "CU",
+      username: currentUser.username,
+      avatar: currentUser.avatar,
       ...newPostData,
       upvotes: 0,
       lat: 51.1282,
@@ -68,7 +69,7 @@ export default function AppShell() {
     setTimeout(() => {
       setShowSuccess(false);
     }, 3200);
-  }, []);
+  }, [currentUser]);
 
   const handleTabChange = useCallback((tab) => {
     setActiveTab(tab);
@@ -97,7 +98,11 @@ export default function AppShell() {
         visible={activeTab === "feed"}
       />
 
-      <Profile visible={activeTab === "profile"} />
+      <Profile 
+        visible={activeTab === "profile"} 
+        currentUser={currentUser}
+        onUpdateUser={setCurrentUser}
+      />
 
       {activeTab === "map" && selectedPost && !isDetailOpen && (
         <PostCard

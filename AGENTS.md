@@ -157,6 +157,35 @@ This document tracks Antigravity's progress, changes made, and current status of
 
 ---
 
+## UI Fixes, Refinements, and Layout Polish (Post Stage 3)
+
+### Map Marker Clustering & Zoom Focus
+- Integrated react-leaflet-cluster in Map.js to group nearby posts dynamically when zoomed out.
+- Styled custom cluster icons following Material You design, with dynamic sizing based on the number of grouped markers.
+- Increased the target zoom level to 18 (the maximum street-level zoom) in the FocusSelectedPin component when a post is focused from the feed or map. This automatically unclusters nearby pins and triggers spiderfying for posts sharing the exact same coordinates.
+- Added a semi-transparent "BirQala" watermark overlay in the top-left corner of the map.
+
+### Responsive Feed Layout
+- Converted the single-column feed list into a responsive CSS grid layout:
+  - Mobile: 1 column.
+  - Tablet/Small Desktop: 2 columns.
+  - Desktop: 3 columns.
+  - Large Desktop: 4 columns max (centered container with 1600px max-width).
+- Aligned the search bar and sorting filter tabs side-by-side on desktop viewports to save vertical space.
+- Fixed layout squishing on mobile (cards looking like pills) and card overlapping on desktop by removing overflow: hidden from postCard (restoring natural min-height: auto rendering) and adding flex-shrink: 0.
+
+### Placeholder Image & Requirement Sync
+- Generated a clean modern placeholder image with the text "TEST" at test_placeholder.png.
+- Assigned the test placeholder image to all mock posts (ID 6-10) that previously lacked images, ensuring every post has an image.
+- Updated the post creation flow (CreatePost.js) to display the "TEST" placeholder image as pre-uploaded by default, passing it along when submitting a new post.
+
+### Floating Settings Menu
+- Moved user profile state (currentUser) to AppShell.js to enable dynamic name and avatar synchronization between the Profile tab and the post creation workflow.
+- Implemented a floating settings card menu centered on the screen with a blurred backdrop overlay, toggled by the Settings gear icon on the Profile tab.
+- Users can edit their Full Name and Username inside the card. Saving changes dynamically updates the profile details and generates new initials for the user avatar.
+
+---
+
 ## Up Next — Stage 4: Geolocation and Post Creation
 
 - Geolocation support to determine user's current coordinates.
