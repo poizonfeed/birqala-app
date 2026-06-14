@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
@@ -10,6 +10,37 @@ import styles from "./Map.module.css";
 
 const ASTANA_CENTER = [51.128, 71.43];
 const DEFAULT_ZOOM = 12;
+
+const userLocationIcon = L.divIcon({
+  className: "user-location-marker",
+  html: `
+    <div style="
+      width: 18px;
+      height: 18px;
+      background: #4285F4;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3), 0 2px 6px rgba(0,0,0,0.3);
+      position: relative;
+    ">
+      <div style="
+        position: absolute;
+        inset: -12px;
+        border-radius: 50%;
+        background: rgba(66, 133, 244, 0.25);
+        animation: mapPulse 2s ease-out infinite;
+      "></div>
+    </div>
+    <style>
+      @keyframes mapPulse {
+        0% { transform: scale(0.5); opacity: 1; }
+        100% { transform: scale(1.5); opacity: 0; }
+      }
+    </style>
+  `,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
 
 /**
  * Builds a Leaflet divIcon shaped like a teardrop pin.
@@ -167,12 +198,10 @@ function FocusSelectedPin({ selectedPost }) {
  * Custom map control panel — vertically centered on the right.
  * Buttons: zoom in, zoom out, reset to north (bearing 0), center on Astana.
  */
-function MapControls({ mapRef }) {
+function MapControls({ mapRef, userLocation }) {
   const zoomIn = useCallback(() => mapRef.current?.zoomIn(), [mapRef]);
   const zoomOut = useCallback(() => mapRef.current?.zoomOut(), [mapRef]);
   const resetNorth = useCallback(() => {
-    // Leaflet core does not support bearing — this just snaps back to default view angle.
-    // When a rotation plugin is added later, setBearing(0) goes here.
     mapRef.current?.setView(mapRef.current.getCenter(), mapRef.current.getZoom(), {
       animate: true,
     });
@@ -180,6 +209,12 @@ function MapControls({ mapRef }) {
   const goToAstana = useCallback(() => {
     mapRef.current?.flyTo(ASTANA_CENTER, DEFAULT_ZOOM, { duration: 1.0 });
   }, [mapRef]);
+
+  const goToMyLocation = useCallback(() => {
+    if (userLocation) {
+      mapRef.current?.flyTo([userLocation.lat, userLocation.lng], 16, { duration: 1.0 });
+    }
+  }, [mapRef, userLocation]);
 
   return (
     <div className={styles.controls}>
@@ -230,8 +265,24 @@ function MapControls({ mapRef }) {
         className={styles.controlBtn}
         onClick={goToAstana}
         aria-label="Center on Astana"
+        id="map-center-city"
+        title="Center the city"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 16V8l6-5 6 5v8" />
+          <path d="M9 16v-5" />
+        </svg>
+      </button>
+
+      <div className={styles.divider} />
+
+      <button
+        className={styles.controlBtn}
+        onClick={goToMyLocation}
+        aria-label="My Location"
         id="map-my-location"
-        title="My location (Astana)"
+        title="My location"
+        style={{ opacity: userLocation ? 1 : 0.5, cursor: userLocation ? "pointer" : "not-allowed" }}
       >
         {/* Location crosshair icon */}
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -246,8 +297,35 @@ function MapControls({ mapRef }) {
   );
 }
 
-export default function MapView({ posts, onPinClick, selectedPostId, onMapClick, visible }) {
+export default function MapView({ currentUser, posts, onPinClick, selectedPostId, onMapClick, visible }) {
   const mapRef = useRef(null);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    if (currentUser?.preferences?.useFakeLocation) {
+      setUserLocation({ 
+        lat: currentUser.preferences.fakeLat, 
+        lng: currentUser.preferences.fakeLng 
+      });
+      return;
+    }
+
+    if ("geolocation" in navigator) {
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Error watching location for map icon:", error);
+        },
+        { enableHighAccuracy: true, maximumAge: 5000 }
+      );
+      return () => navigator.geolocation.clearWatch(watchId);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (visible && mapRef.current) {
@@ -274,6 +352,9 @@ export default function MapView({ posts, onPinClick, selectedPostId, onMapClick,
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
         />
         <MapClickHandler onMapClick={onMapClick} />
+        {userLocation && (
+          <Marker position={[userLocation.lat, userLocation.lng]} icon={userLocationIcon} zIndexOffset={500} />
+        )}
         <MarkerClusterGroup
           iconCreateFunction={createClusterCustomIcon}
           maxClusterRadius={45}
@@ -292,7 +373,7 @@ export default function MapView({ posts, onPinClick, selectedPostId, onMapClick,
       </MapContainer>
 
       {/* Custom controls rendered outside Leaflet, absolutely positioned on the right-center */}
-      <MapControls mapRef={mapRef} />
+      <MapControls mapRef={mapRef} userLocation={userLocation} />
     </div>
   );
 }

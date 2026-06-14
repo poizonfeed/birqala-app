@@ -182,7 +182,7 @@ export default function CreatePost({ currentUser, onClose, onSubmit }) {
                   {locationLoading 
                     ? "Locating..." 
                     : locationError 
-                      ? `${locationError} (Fallback: Astana)` 
+                      ? <>{locationError} <br/><span style={{fontSize: '0.75rem', opacity: 0.8}}>Fallback: Astana (You can use fake geolocation in settings)</span></>
                       : `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`}
                 </span>
               </div>

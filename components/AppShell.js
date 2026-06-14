@@ -138,6 +138,7 @@ export default function AppShell() {
   return (
     <div className={styles.shell}>
       <MapView
+        currentUser={currentUser}
         posts={posts}
         onPinClick={handlePinClick}
         selectedPostId={selectedPost?.id ?? null}
