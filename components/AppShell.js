@@ -97,7 +97,7 @@ export default function AppShell() {
         visible={activeTab === "feed"}
       />
 
-      {activeTab === "profile" && <Profile />}
+      <Profile visible={activeTab === "profile"} />
 
       {activeTab === "map" && selectedPost && !isDetailOpen && (
         <PostCard

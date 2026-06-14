@@ -140,8 +140,25 @@ This document tracks Antigravity's progress, changes made, and current status of
 
 ---
 
-## Up Next — Stage 3: Profile Page
+## Stage 3 — Profile Page (Completed)
 
-- Complete implementation of the user Profile page.
-- Display the user's history of created posts and verified issues.
-- Show accumulated XP/Points.
+### Mock Data
+- Added `mockUser` object to `lib/mockData.js` representing the current user's profile information.
+- Includes username, avatar, level ("Active Citizen"), rank, XP, stats (posts, verifications, resolved issues), and an activity history timeline array.
+
+### Profile Component
+- Implemented `Profile.js` and `Profile.module.css` following the Material You design system.
+- Conditionally rendered via `display: none` / `flex` in `AppShell` (using the `visible` prop) to preserve the scroll position.
+- **Header Section:** Displays avatar, user info, level badge, and weekly rank badge (highlighted in orange).
+- **XP Section:** Visually prominent XP counter with a progress bar to the next level.
+- **Stats Row:** Three grid-aligned boxes for quick metrics (Posts, Verified, Resolved).
+- **Recent Activity:** A scrollable timeline list mapping over `mockUser.history`. Different activity types (resolved, verification, post) use unique pastel-colored icon wrappers for visual clarity.
+- Ensured the component has `padding-bottom: 120px` so content isn't obscured by the Floating Nav.
+
+---
+
+## Up Next — Stage 4: Geolocation and Post Creation
+
+- Geolocation support to determine user's current coordinates.
+- Camera and photo support for creating a post in the Create Post flow.
+
